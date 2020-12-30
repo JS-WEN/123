@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="css/fenye.css" />
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<title></title>
+	</head>
+	<body>
+		
+		
+		<table class="table table-striped table-bordered table-hover">
+			<tbody id="tb">
+				
+			</tbody>	
+		</table>
+		
+		
+		  <ul class="pagi" id="u1">
+		    <li>
+		        <button onclick="previouspage()">上一页</button> 
+		    </li>
+		    <li onclick="search(1)" id="1"><a class="acti">1</a></li>
+			<li onclick="search(2)" id="2"><a>2</a></li>
+			<li onclick="search(3)" id="3"><a>3</a></li>
+			<li onclick="search(3)" id="4"><a>4</a></li>
+			<li onclick="search(4)" id="5"><a>5</a></li>
+			<li onclick="search(5)" id="6"><a>6</a></li>
+			<li onclick="search(6)" id="7"><a>7</a></li>
+			<li onclick="search(7)" id="8"><a>8</a></li>
+			<li onclick="search(8)" id="9"><a>9</a></li>
+			<li onclick="search(9)" id="10"><a>10</a></li>
+		    <li>
+		        <button onclick="nextpage()">下一页</button>
+		    </li>
+		  </ul>
+		</nav>
+		
+		<script type="text/javascript">
+			var page=1;
+			document.onreadystatechange = function () {   
+			                 if(document.readyState=="complete") {  
+								 var change=document.getElementById(page);
+			                      search(change);
+			                  }   
+			              } 
+			function previouspage(){
+				if(page>1){
+					page--;
+					var change=document.getElementById(page++);
+					search(change);
+				}else{
+					alert("已经到第一页了")
+				}
+				
+			}
+			function nextpage(){
+				if(page<10){
+					page++;
+					var change=document.getElementById(page--);
+					search(change);
+				}else{
+					alert("已经到最后一页了")
+				}
+				
+			}	
+				
+			function search(obj){
+				document.getElementById(page).childNodes[0].setAttribute("class","");
+				obj.childNodes[0].setAttribute("class","acti");
+				page=obj.id;
+				$.ajax({
+					type:"POST",
+					url:"https://api.apiopen.top/getImages",
+					data:"page="+page+"&count="+20,
+					success:function(data){
+						var result=data.result;
+						var tb=$("#tb");
+						tb.html("");
+						
+						for(var index=0;index<result.length;index=index+4){
+							var str="<tr><td><a href='"+result[index].img+"' target='_blank'><img src='"+result[index].img+"'/></a></td>"+
+							"<td><a href='"+result[index+1].img+"' target='_blank'><img src='"+result[index+1].img+"'/></a></td>"+
+							"<td><a href='"+result[index+2].img+"' target='_blank'><img src='"+result[index+2].img+"'/></a></td>"+
+							"<td><a href='"+result[index+3].img+"' target='_blank'><img src='"+result[index+3].img+"'/></a></td></tr>"
+							
+							tb.append(str);
+						
+						}
+						
+						
+					}
+					
+					});
+				
+			}
+		</script>
+	</body>
+</html>
